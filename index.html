@@ -77,11 +77,6 @@
         }
 
         function step() {
-            // Check bounds
-            if (antX < 0 || antX >= cols || antY < 0 || antY >= rows) {
-                return;
-            }
-
             const currentCell = grid[antY][antX];
 
             // Langton's Ant rules:
@@ -103,11 +98,17 @@
             // Move forward
             antX += dx[antDirection];
             antY += dy[antDirection];
+
+            // Wrap around edges (toroidal world)
+            if (antX < 0) antX = cols - 1;
+            if (antX >= cols) antX = 0;
+            if (antY < 0) antY = rows - 1;
+            if (antY >= rows) antY = 0;
         }
 
         function animate() {
             // Run multiple steps per frame for faster simulation
-            for (let i = 0; i < 10; i++) {
+            for (let i = 0; i < 100; i++) {
                 step();
             }
 
