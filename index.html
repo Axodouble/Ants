@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Langton's Ant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+            background: #000;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set canvas to full screen
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Grid settings
+        const cellSize = 4;
+        const cols = Math.floor(canvas.width / cellSize);
+        const rows = Math.floor(canvas.height / cellSize);
+
+        // Grid to track cell states (0 = black, 1 = white)
+        const grid = Array(rows).fill().map(() => Array(cols).fill(0));
+
+        // Ant properties
+        let antX = Math.floor(cols / 2);
+        let antY = Math.floor(rows / 2);
+        let antDirection = 0; // 0=North, 1=East, 2=South, 3=West
+
+        // Direction vectors
+        const dx = [0, 1, 0, -1];
+        const dy = [-1, 0, 1, 0];
+
+        function drawGrid() {
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw white cells
+            ctx.fillStyle = '#fff';
+            for (let y = 0; y < rows; y++) {
+                for (let x = 0; x < cols; x++) {
+                    if (grid[y][x] === 1) {
+                        ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                    }
+                }
+            }
+
+            // Draw ant as a red pixel
+            ctx.fillStyle = '#ff0000';
+            ctx.fillRect(antX * cellSize, antY * cellSize, cellSize, cellSize);
+        }
+
+        function step() {
+            // Check bounds
+            if (antX < 0 || antX >= cols || antY < 0 || antY >= rows) {
+                return;
+            }
+
+            const currentCell = grid[antY][antX];
+
+            // Langton's Ant rules:
+            // If on black cell (0): turn right, flip cell to white, move forward
+            // If on white cell (1): turn left, flip cell to black, move forward
+
+            if (currentCell === 0) {
+                // Turn right
+                antDirection = (antDirection + 1) % 4;
+                // Flip to white
+                grid[antY][antX] = 1;
+            } else {
+                // Turn left
+                antDirection = (antDirection - 1 + 4) % 4;
+                // Flip to black
+                grid[antY][antX] = 0;
+            }
+
+            // Move forward
+            antX += dx[antDirection];
+            antY += dy[antDirection];
+        }
+
+        function animate() {
+            // Run multiple steps per frame for faster simulation
+            for (let i = 0; i < 10; i++) {
+                step();
+            }
+
+            drawGrid();
+            requestAnimationFrame(animate);
+        }
+
+        // Start the simulation
+        drawGrid();
+        animate();
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            // Restart simulation with new dimensions
+            const newCols = Math.floor(canvas.width / cellSize);
+            const newRows = Math.floor(canvas.height / cellSize);
+
+            // Reset grid
+            grid.length = 0;
+            for (let i = 0; i < newRows; i++) {
+                grid.push(Array(newCols).fill(0));
+            }
+
+            // Reset ant position
+            antX = Math.floor(newCols / 2);
+            antY = Math.floor(newRows / 2);
+            antDirection = 0;
+        });
+    </script>
+</body>
+
+</html>
