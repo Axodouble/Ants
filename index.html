@@ -206,10 +206,19 @@
         // Control functions
         function addAnt() {
             const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ff8800', '#8800ff'];
-            const rules = ['RL', 'LR', 'RLR', 'LRL', 'RRLL', 'LLRR', 'RLRL', 'LRLR', 'RSL', 'LSR', 'RLSR', 'SLRS', 'SSRL', 'RSSL'];
+            const rules = ['R', 'L', 'S', 'U'];
 
             const randomColor = colors[Math.floor(Math.random() * colors.length)];
-            const randomRules = rules[Math.floor(Math.random() * rules.length)];
+
+            let ruleCount = (Math.random() * 10) + 1;
+            let randomRules = ''
+            while (ruleCount > 0) {
+                const rule = rules[Math.floor(Math.random() * rules.length)];
+                randomRules += rule;
+                ruleCount--;
+            }
+
+
             const randomX = Math.floor(Math.random() * cols);
             const randomY = Math.floor(Math.random() * rows);
 
