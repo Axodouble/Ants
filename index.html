@@ -121,14 +121,14 @@
                 const rule = this.rules[ruleIndex];
 
                 // Apply rule
-                if (rule === 'L') {
+                if (rule.toUpperCase() === 'L') {
                     this.direction = (this.direction - 1 + 4) % 4;
-                } else if (rule === 'R') {
+                } else if (rule.toUpperCase() === 'R') {
                     this.direction = (this.direction + 1) % 4;
-                } else if (rule === 'S' || rule === 'N') {
+                } else if (rule.toUpperCase() === 'S' || rule.toUpperCase() === 'N') {
                     // 'S' = straight ahead, 'N' = no turn (same thing)
                     // Direction remains unchanged
-                } else if (rule === 'U') {
+                } else if (rule.toUpperCase() === 'U') {
                     // 'U' = U-turn (180 degrees)
                     this.direction = (this.direction + 2) % 4;
                 }
